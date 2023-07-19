@@ -2,11 +2,13 @@
 
 const buttonCount = 6;
 const timeout = 10000; 
+const allButtons = []
 const evenButtons = [];
 const oddButtons = [];
-let allEvenChosen = false;
-let allOddChosen = false;
 
+for (let i = 1; i <= buttonCount; i++) {
+    allButtons.push(i);
+  }
 for (let i = 1; i <= buttonCount; i++) {
   if (i % 2 === 0) {
     evenButtons.push(i);
@@ -37,59 +39,56 @@ for (let i = 1; i <= buttonCount; i++) {
 const buttonElements = [...document.querySelectorAll("button")];
 
 function chosenAllButtons() {
-    return new Promise(() => {
-        if (allEvenChosen && allOddChosen) {
-            alert("You chose all buttons!");
-            
-}})
-}
+    const allbuttonPromises = buttonElements
+   .map((btnEl) => new Promise ((resolve) => {
+      btnEl.onclick = () => resolve(+btnEl.textContent) 
+  }))
+  
+  Promise.all(allbuttonPromises).then(chosenValues => {
+      if(chosenValues.length === evenButtons.length) {
+          
+          alert('You chose all  buttons')
+      }})};
+  
 
 function chosenEvenButtons() {
-  const evenButtonPromises = buttonElements
-    .filter((btnEl) => evenButtons.includes(+btnEl.textContent))
-    .map(
-      (btnEl) =>
-        new Promise(() => {
-          btnEl.onclick = () => {
-            if (evenButtons.includes(+btnEl.textContent)) {
-            const index = evenButtons.indexOf(+btnEl.textContent);
-            evenButtons.splice(index, 1);
-
-            if (evenButtons.length === 0) {
-              allEvenChosen = true;
-              alert("You chose all even buttons");
-              chosenAllButtons();
-            }
-        }
-           
-          };
-        })
-    );
-
+    const evenbuttonPromises = buttonElements
+    .filter((btnEl) => +btnEl.textContent % 2  === 0).map((btnEl) => new Promise ((resolve) => {
+      btnEl.onclick = () => resolve(+btnEl.textContent) 
+  }))
   
-}
+  Promise.all(evenbuttonPromises).then(chosenValues => {
+      if(chosenValues.length === evenButtons.length) {
+          
+          alert('You chose all even buttons')
+      }})};
 
 function chosenOddButtons() {
-  const oddbuttonPromises = buttonElements.map(
-    (btnEl) =>
-      new Promise(() => {
-        btnEl.onclick = () => {
-          if (oddButtons.includes(+btnEl.textContent)) {
-            const index = oddButtons.indexOf(+btnEl.textContent);
-            oddButtons.splice(index, 1);
+  const oddbuttonPromises = buttonElements
+  .filter((btnEl) => +btnEl.textContent % 2  !== 0).map((btnEl) => new Promise ((resolve) => {
+    btnEl.onclick = () => resolve(+btnEl.textContent) 
+}))
 
-            if (oddButtons.length === 0) {
-              allOddChosen = true;
-              alert("You chose all odd buttons");
-              chosenAllButtons();
-            }
-          }
+Promise.all(oddbuttonPromises).then(chosenValues => {
+    if(chosenValues.length === oddButtons.length) {
+        
+        alert('You chose all odd buttons')
+    }})};
+
+  
+  
+     
+      
+        
+                
+            
+                
+        
+        
+
+          
          
-        };
-      })
-  );
-
-}
-
+        
+chosenAllButtons();
 chosenOddButtons();
 chosenEvenButtons();
